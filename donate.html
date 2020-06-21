@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
+
+<body>
+    <div>
+    <h1 id="t" class="font-semibold" >PAYMENT GATEWAY</h1>
+</div>
+    <div class="button" id="show">
+       <input type="text" id="text" hidden/>
+       <form id="myform" method="post">
+        <input type="text" hidden id = "email1" name="email"/>
+        <br>
+        <input type="text" hidden id = "amount1" name="message_html"/>
+        <button hidden  id="b">
+            Email receipt of invoice!
+            </button>
+    </form>
+    
+    </div>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@2.3.2/dist/email.min.js"></script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init("user_xBhmhmjiTsGX4EZW2iLC5");
+   })();
+</script>
+<style>
+    body {
+      background-image: url('img/donate-background.jpg');
+    
+       height: 100%; 
+      background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+      opacity: 100%;
+    }
+    </style>
+<style type="text/css">
+.button{
+    padding-left: 42%;
+    display: none;
+}
+#b{
+background-color: 	black;
+  border: none;
+  color: white;
+  padding-left: 10%;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+    #t {
+text-align: center;
+    }
+</style>
+<script>
+var locate = window.location
+document.getElementById("text").value = locate
+
+var text = document.getElementById("text").value
+
+function delineate(str)
+{
+theleft = str.indexOf("=") + 1;
+theright = str.lastIndexOf("&");
+return(str.substring(theleft, theright));
+}
+
+function  email(str)
+{
+theleft = str.indexOf("$") + 1;
+theright = str.lastIndexOf("#");
+return(str.substring(theleft, theright));
+}
+
+document.getElementById("email1").value = email(text);
+document.getElementById("amount1").value = delineate(text);
+var email_add = email(text);
+var totalAmount = delineate(text);
+</script>
+<style>
+    /* Media query for desktop viewport */
+    @media screen and (min-width: 400px) {
+        #paypal-button-container {
+            width: 300px;
+            padding-left: 40%;
+            padding-top: 10%;
+            padding-bottom: 30%;
+        }
+    }
+</style>
+
+<div id="paypal-button-container"></div>
+<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
+<script>
+     paypal.Buttons({
+style: {
+height: 50
+},
+            // Set up the transaction
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: totalAmount
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) 
+                {
+                    alert("Transaction successful");
+                    document.getElementById('show').style.display = 'inline-block';
+                    
+                     });
+            }
+
+
+        }).render('#paypal-button-container');
+    </script>
+
+    <script>
+        var myform = $("form#myform");
+  myform.submit(function(event){
+	event.preventDefault();
+
+  // Change to your service ID, or keep using the default service
+  var service_id = "default_service";
+  var template_id = "template_5ZaMD0oB";
+
+  myform.find("button").text("Sending...");
+  emailjs.sendForm(service_id,template_id,myform[0])
+  	.then(function(){ 
+    	alert("Sent!");
+       myform.find("button").text("Send");
+       window.location.href = "thanks.html";
+    }, function(err) {
+       alert("Send email failed!\r\n Response:\n " + JSON.stringify(err));
+       myform.find("button").text("Send");
+    });
+  return false;
+});
+    </script>
+
+
+</body>
+    
+
+</body>
